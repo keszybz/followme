@@ -29,7 +29,7 @@ def dolist(directory, level=0, number=1, special=None, maxfiles=3):
         dirname = os.path.basename(directory)
     print(found + level * '    ' + BOLD + dirname + DEFAULT + found + os.sep,
           end='\n' + DEFAULT)
-    items = [directory + os.path.sep + item
+    items = [os.path.join(directory, item)
              for item in os.listdir(directory)]
     prevans = False
     prefix = (level + 1) * '    '
