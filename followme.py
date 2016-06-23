@@ -19,12 +19,15 @@ parser.add_argument('-p', '--pid', type=int, default=os.getppid())
 parser.add_argument('directory', nargs='*', default=('.'))
 
 def dolist(directory, level=0, number=1, special=None, maxfiles=3):
-    found = REVERSE if os.path.realpath(directory) == special else ''
-    if (number > maxfiles - 1 and not found and
-        not special.startswith(os.path.realpath(directory))):
+    realdir = os.path.realpath(directory)
+    found = REVERSE if realdir == special else ''
+    rel_special = os.path.relpath(special, realdir)
+    rel_special_first_segment = rel_special.split(os.path.sep)[0]
+    special_ancestor = rel_special_first_segment != os.path.pardir
+    if (number > maxfiles - 1 and not found and not special_ancestor):
         return None
     if level == 0:
-        dirname = os.path.realpath(directory)
+        dirname = realdir
     else:
         dirname = os.path.basename(directory)
     print(found + level * '    ' + BOLD + dirname + DEFAULT + found + os.sep,
